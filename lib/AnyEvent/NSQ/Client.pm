@@ -40,8 +40,9 @@ sub publish {
 
   if (ref($data[-1]) eq 'CODE' or !defined($data[-1])) {
     my $cb = pop @data;
-    push @data, sub { $cb->($self, $topic, \@data, @_) }
-      if $cb;
+    my @cp_data = @data;
+
+    push @data, sub { $cb->($self, $topic, \@cp_data, @_) } if ($cb)
   }
 
   return $conn->publish($topic, @data);
